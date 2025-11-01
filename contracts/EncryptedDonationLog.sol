@@ -104,5 +104,26 @@ contract EncryptedDonationLog is SepoliaConfig {
     function recordExists(uint256 recordId) external view returns (bool) {
         return records[recordId].exists;
     }
+
+    /// @notice Get total number of donations made
+    /// @return The total count of donation records
+    function getTotalDonationCount() external view returns (uint256) {
+        return nextRecordId;
+    }
+
+    /// @notice Get donation statistics for a user
+    /// @param user The user address to query
+    /// @return totalDonations The total number of donations by this user
+    /// @return lastDonationId The ID of the user's last donation (0 if no donations)
+    function getUserDonationStats(address user) external view returns (uint256 totalDonations, uint256 lastDonationId) {
+        uint256[] memory userRecordIds = userDonations[user];
+        totalDonations = userRecordIds.length;
+
+        if (totalDonations > 0) {
+            lastDonationId = userRecordIds[totalDonations - 1];
+        } else {
+            lastDonationId = 0;
+        }
+    }
 }
 
