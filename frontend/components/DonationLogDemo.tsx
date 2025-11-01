@@ -11,6 +11,7 @@ import { EncryptedDonationLogAddresses } from "@/abi/EncryptedDonationLogAddress
 import { EncryptedDonationLogABI } from "@/abi/EncryptedDonationLogABI";
 import { config as wagmiConfig } from "@/config/wagmi";
 import { DonationStats } from "@/components/DonationStats";
+import { DonationChart } from "@/components/DonationChart";
 
 interface DonationRecord {
   recordId: number;
@@ -377,6 +378,8 @@ export const DonationLogDemo = () => {
       </div>
 
       <DonationStats totalRecords={0} userRecords={donationRecords.length} />
+
+      <DonationChart donations={[]} />
 
       {showRelayerError && (
         <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 shadow-lg">
