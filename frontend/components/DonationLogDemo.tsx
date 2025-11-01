@@ -12,6 +12,7 @@ import { EncryptedDonationLogABI } from "@/abi/EncryptedDonationLogABI";
 import { config as wagmiConfig } from "@/config/wagmi";
 import { DonationStats } from "@/components/DonationStats";
 import { DonationChart } from "@/components/DonationChart";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface DonationRecord {
   recordId: number;
@@ -374,6 +375,7 @@ export const DonationLogDemo = () => {
   return (
     <div className="grid w-full gap-6 px-4">
       <div className="flex justify-end items-center gap-3">
+        <ThemeToggle />
         <ConnectButton />
       </div>
 
