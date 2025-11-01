@@ -1,0 +1,10 @@
+node_modules
+.next
+.cache
+artifacts
+deployments
+fhevmTemp
+types
+coverage
+*.log
+
