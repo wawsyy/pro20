@@ -8,6 +8,23 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 /// @notice A contract for storing encrypted donation records that can only be decrypted by the donor
 /// @author Encrypted Donation Log MVP
 contract EncryptedDonationLog is SepoliaConfig {
+    /// @notice Contract constructor
+    constructor() {
+        owner = msg.sender;
+        paused = false;
+    }
+
+    /// @notice Modifier to check if contract is not paused
+    modifier whenNotPaused() {
+        require(!paused, "Contract is paused");
+        _;
+    }
+
+    /// @notice Modifier to check if caller is owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
     struct DonationRecord {
         address submitter;
         euint32 encryptedAmount;  // Encrypted donation amount
@@ -20,8 +37,34 @@ contract EncryptedDonationLog is SepoliaConfig {
     mapping(uint256 => DonationRecord) public records;
     mapping(address => uint256[]) public userDonations; // user address -> record IDs
 
+    bool public paused;
+    address public owner;
+
     event DonationSubmitted(uint256 indexed recordId, address indexed submitter, uint256 blockNumber);
     event DonationDecrypted(uint256 indexed recordId, address indexed viewer);
+    event ContractPaused(address indexed account);
+    event ContractUnpaused(address indexed account);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Pause the contract (only owner)
+    function pause() external onlyOwner {
+        paused = true;
+        emit ContractPaused(msg.sender);
+    }
+
+    /// @notice Unpause the contract (only owner)
+    function unpause() external onlyOwner {
+        paused = false;
+        emit ContractUnpaused(msg.sender);
+    }
+
+    /// @notice Transfer ownership to a new address (only owner)
+    /// @param newOwner The address of the new owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "New owner cannot be zero address");
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
+    }
 
     /// @notice Submit a new encrypted donation record
     /// @param encryptedAmount The encrypted donation amount
@@ -32,7 +75,7 @@ contract EncryptedDonationLog is SepoliaConfig {
         externalEuint32 encryptedAmount,
         externalEuint32 encryptedTimestamp,
         bytes calldata inputProof
-    ) external returns (uint256 recordId) {
+    ) external whenNotPaused returns (uint256 recordId) {
         recordId = nextRecordId++;
         
         DonationRecord storage record = records[recordId];
