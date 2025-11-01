@@ -36,6 +36,8 @@ export const DonationLogDemo = () => {
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [decryptingRecordId, setDecryptingRecordId] = useState<number | null>(null);
+  const [filterText, setFilterText] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
     setMounted(true);
@@ -449,33 +451,62 @@ export const DonationLogDemo = () => {
           <p className="text-gray-500 text-center py-8">No donation records found</p>
         ) : (
           <div className="space-y-4">
-            {donationRecords.map((record) => (
-              <div key={record.recordId} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-500">Record ID: {record.recordId}</p>
-                    <p className="text-lg font-semibold mt-2">
-                      Amount: {record.amount}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Timestamp: {record.timestamp}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Block: {record.blockNumber}
-                    </p>
+            {/* Filter and Sort Controls */}
+            <div className="flex gap-4 items-center">
+              <input
+                type="text"
+                placeholder="Filter by record ID..."
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="desc">Newest First</option>
+                <option value="asc">Oldest First</option>
+              </select>
+            </div>
+
+            {/* Filtered and Sorted Records */}
+            {(() => {
+              const filteredRecords = donationRecords
+                .filter(record => record.recordId.toString().includes(filterText))
+                .sort((a, b) => sortOrder === 'desc'
+                  ? Number(b.recordId) - Number(a.recordId)
+                  : Number(a.recordId) - Number(b.recordId)
+                );
+
+              return filteredRecords.map((record) => (
+                <div key={record.recordId} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-500">Record ID: {record.recordId}</p>
+                      <p className="text-lg font-semibold mt-2">
+                        Amount: {record.amount}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Timestamp: {record.timestamp}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Block: {record.blockNumber}
+                      </p>
+                    </div>
+                    {record.amount === "Encrypted" && (
+                      <button
+                        onClick={() => handleDecryptRecord(record.recordId)}
+                        disabled={decryptingRecordId === record.recordId || zamaLoading}
+                        className="ml-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {decryptingRecordId === record.recordId ? "Decrypting..." : "Decrypt"}
+                      </button>
+                    )}
                   </div>
-                  {record.amount === "Encrypted" && (
-                    <button
-                      onClick={() => handleDecryptRecord(record.recordId)}
-                      disabled={decryptingRecordId === record.recordId || zamaLoading}
-                      className="ml-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {decryptingRecordId === record.recordId ? "Decrypting..." : "Decrypt"}
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))}
+              ));
+            })()}
           </div>
         )}
       </div>
