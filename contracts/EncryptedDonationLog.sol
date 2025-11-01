@@ -125,5 +125,58 @@ contract EncryptedDonationLog is SepoliaConfig {
             lastDonationId = 0;
         }
     }
+
+    /// @notice Get multiple donation record IDs for a user with pagination
+    /// @param user The user address to query
+    /// @param offset The starting index for pagination
+    /// @param limit The maximum number of records to return
+    /// @return recordIds Array of donation record IDs for the user
+    function getUserDonationIdsPaginated(address user, uint256 offset, uint256 limit) external view returns (uint256[] memory recordIds) {
+        uint256[] memory userRecordIds = userDonations[user];
+        uint256 totalRecords = userRecordIds.length;
+
+        if (offset >= totalRecords) {
+            return new uint256[](0);
+        }
+
+        uint256 endIndex = offset + limit;
+        if (endIndex > totalRecords) {
+            endIndex = totalRecords;
+        }
+
+        uint256 resultLength = endIndex - offset;
+        recordIds = new uint256[](resultLength);
+
+        for (uint256 i = 0; i < resultLength; i++) {
+            recordIds[i] = userRecordIds[offset + i];
+        }
+    }
+
+    /// @notice Get batch metadata for multiple donation records
+    /// @param recordIds Array of record IDs to query
+    /// @return submitters Array of submitter addresses
+    /// @return blockNumbers Array of block numbers
+    /// @return exists Array indicating which records exist
+    function getBatchRecordMetadata(uint256[] calldata recordIds) external view returns (
+        address[] memory submitters,
+        uint256[] memory blockNumbers,
+        bool[] memory exists
+    ) {
+        uint256 length = recordIds.length;
+        submitters = new address[](length);
+        blockNumbers = new uint256[](length);
+        exists = new bool[](length);
+
+        for (uint256 i = 0; i < length; i++) {
+            uint256 recordId = recordIds[i];
+            DonationRecord storage record = records[recordId];
+
+            exists[i] = record.exists;
+            if (record.exists) {
+                submitters[i] = record.submitter;
+                blockNumbers[i] = record.blockNumber;
+            }
+        }
+    }
 }
 
