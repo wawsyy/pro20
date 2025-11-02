@@ -140,3 +140,6 @@ This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE]
 
 - UI improvement #20 added at 2025-11-03 05:00:00
 
+
+- Contract feature #21 added at 2025-11-03 06:00:00
+
