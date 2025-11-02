@@ -40,6 +40,7 @@ export const DonationLogDemo = () => {
   const [decryptingRecordId, setDecryptingRecordId] = useState<number | null>(null);
   const [filterText, setFilterText] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -305,6 +306,46 @@ export const DonationLogDemo = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (donationRecords.length === 0) {
+      setMessage("No records to export");
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      const csvData = [
+        ['Record ID', 'Amount', 'Timestamp', 'Block Number'],
+        ...donationRecords.map(record => [
+          record.recordId.toString(),
+          record.amount,
+          record.timestamp,
+          record.blockNumber
+        ])
+      ];
+
+      const csvContent = csvData.map(row =>
+        row.map(field => `"${field}"`).join(',')
+      ).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `donation-records-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setMessage("Donation records exported successfully!");
+    } catch (error) {
+      setMessage("Failed to export records");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (!mounted) {
     return (
       <div className="mx-auto mt-20">
@@ -443,13 +484,22 @@ export const DonationLogDemo = () => {
       <div className="bg-white rounded-xl p-6 shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">My Donation Records</h2>
-          <button
-            onClick={loadDonationRecords}
-            disabled={isLoadingRecords}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-          >
-            {isLoadingRecords ? "Loading..." : "Refresh"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={loadDonationRecords}
+              disabled={isLoadingRecords}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+            >
+              {isLoadingRecords ? "Loading..." : "Refresh"}
+            </button>
+            <button
+              onClick={exportToCSV}
+              disabled={isExporting || donationRecords.length === 0}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+            >
+              {isExporting ? "Exporting..." : "Export CSV"}
+            </button>
+          </div>
         </div>
 
         {donationRecords.length === 0 ? (
