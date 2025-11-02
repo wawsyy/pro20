@@ -86,7 +86,9 @@ function readDeployment(chainName, chainId, contractName, optional) {
 }
 
 // Auto deployed on Linux/Mac (will fail on windows)
-const deployLocalhost = readDeployment("localhost", 31337, CONTRACT_NAME, false /* optional */);
+// In build environments (SKIP_HARDHAT_CHECK), make localhost optional
+const skipHardhatCheck = process.env.SKIP_HARDHAT_CHECK === 'true';
+const deployLocalhost = readDeployment("localhost", 31337, CONTRACT_NAME, skipHardhatCheck /* optional in build mode */);
 
 // Sepolia is optional
 let deploySepolia = readDeployment("sepolia", 11155111, CONTRACT_NAME, true /* optional */);
