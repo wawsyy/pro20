@@ -125,3 +125,6 @@ This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE]
 
 - Contract feature #15 added at 2025-11-03 00:00:00
 
+
+- UI improvement #16 added at 2025-11-03 01:00:00
+
