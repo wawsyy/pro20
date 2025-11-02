@@ -139,7 +139,9 @@ const tsAddresses = `
   This file is auto-generated.
   Command: 'npm run genabi'
 */
-export const ${CONTRACT_NAME}Addresses = { 
+export const ${CONTRACT_NAME}Addresses: {
+  [chainId: string]: { address: string; chainId: number; chainName: string } | undefined;
+} = { 
   "11155111": { address: "${deploySepolia.address}", chainId: 11155111, chainName: "sepolia" },
   "31337": { address: "${deployLocalhost.address}", chainId: 31337, chainName: "hardhat" },
 };
