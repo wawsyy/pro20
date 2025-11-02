@@ -12,6 +12,7 @@ contract EncryptedDonationLog is SepoliaConfig {
     constructor() {
         owner = msg.sender;
         paused = false;
+        minimumDonationAmount = 1; // Default minimum donation of 1 unit
     }
 
     /// @notice Modifier to check if contract is not paused
@@ -39,12 +40,14 @@ contract EncryptedDonationLog is SepoliaConfig {
 
     bool public paused;
     address public owner;
+    uint256 public minimumDonationAmount;
 
     event DonationSubmitted(uint256 indexed recordId, address indexed submitter, uint256 blockNumber);
     event DonationDecrypted(uint256 indexed recordId, address indexed viewer);
     event ContractPaused(address indexed account);
     event ContractUnpaused(address indexed account);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event MinimumDonationAmountChanged(address indexed changer, uint256 newAmount);
 
     /// @notice Pause the contract (only owner)
     function pause() external onlyOwner {
@@ -64,6 +67,13 @@ contract EncryptedDonationLog is SepoliaConfig {
         require(newOwner != address(0), "New owner cannot be zero address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
+    }
+
+    /// @notice Set minimum donation amount (only owner)
+    /// @param newMinimum The new minimum donation amount
+    function setMinimumDonationAmount(uint256 newMinimum) external onlyOwner {
+        minimumDonationAmount = newMinimum;
+        emit MinimumDonationAmountChanged(owner, newMinimum);
     }
 
     /// @notice Submit a new encrypted donation record
