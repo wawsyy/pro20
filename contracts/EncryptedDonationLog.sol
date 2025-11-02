@@ -13,6 +13,7 @@ contract EncryptedDonationLog is SepoliaConfig {
         owner = msg.sender;
         paused = false;
         minimumDonationAmount = 1; // Default minimum donation of 1 unit
+        maximumDonationAmount = 10000; // Default maximum donation of 10000 units
     }
 
     /// @notice Modifier to check if contract is not paused
@@ -41,6 +42,7 @@ contract EncryptedDonationLog is SepoliaConfig {
     bool public paused;
     address public owner;
     uint256 public minimumDonationAmount;
+    uint256 public maximumDonationAmount;
 
     event DonationSubmitted(uint256 indexed recordId, address indexed submitter, uint256 blockNumber);
     event DonationDecrypted(uint256 indexed recordId, address indexed viewer);
@@ -48,6 +50,7 @@ contract EncryptedDonationLog is SepoliaConfig {
     event ContractUnpaused(address indexed account);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event MinimumDonationAmountChanged(address indexed changer, uint256 newAmount);
+    event MaximumDonationAmountChanged(address indexed changer, uint256 newAmount);
 
     /// @notice Pause the contract (only owner)
     function pause() external onlyOwner {
@@ -72,8 +75,17 @@ contract EncryptedDonationLog is SepoliaConfig {
     /// @notice Set minimum donation amount (only owner)
     /// @param newMinimum The new minimum donation amount
     function setMinimumDonationAmount(uint256 newMinimum) external onlyOwner {
+        require(newMinimum <= maximumDonationAmount, "Minimum cannot exceed maximum");
         minimumDonationAmount = newMinimum;
         emit MinimumDonationAmountChanged(owner, newMinimum);
+    }
+
+    /// @notice Set maximum donation amount (only owner)
+    /// @param newMaximum The new maximum donation amount
+    function setMaximumDonationAmount(uint256 newMaximum) external onlyOwner {
+        require(newMaximum >= minimumDonationAmount, "Maximum cannot be less than minimum");
+        maximumDonationAmount = newMaximum;
+        emit MaximumDonationAmountChanged(owner, newMaximum);
     }
 
     /// @notice Submit a new encrypted donation record
