@@ -13,6 +13,7 @@ import { config as wagmiConfig } from "@/config/wagmi";
 import { DonationStats } from "@/components/DonationStats";
 import { DonationChart } from "@/components/DonationChart";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 interface DonationRecord {
   recordId: number;
@@ -476,7 +477,14 @@ export const DonationLogDemo = () => {
             disabled={isSubmitting || zamaLoading || !donationAmount}
             className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isSubmitting ? "Submitting..." : zamaLoading ? "Loading..." : "Submit Encrypted Donation"}
+            {isSubmitting || zamaLoading ? (
+              <div className="flex items-center gap-2">
+                <LoadingSpinner size="sm" />
+                {isSubmitting ? "Submitting..." : "Loading..."}
+              </div>
+            ) : (
+              "Submit Encrypted Donation"
+            )}
           </button>
         </div>
       </div>
