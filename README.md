@@ -1,4 +1,4 @@
-# Encrypted Anonymous Donation Log
+﻿# Encrypted Anonymous Donation Log
 
 A privacy-preserving donation tracking system built with FHEVM (Fully Homomorphic Encryption Virtual Machine) by Zama. This system allows users to submit encrypted donation records that can only be decrypted by the donor themselves, ensuring complete privacy for charitable contributions.
 
@@ -68,21 +68,21 @@ A privacy-preserving donation tracking system built with FHEVM (Fully Homomorphi
    npx hardhat test --network sepolia
    ```
 
-## 📁 Project Structure
+## 馃搧 Project Structure
 
 ```
 encrypted-donation-log/
-├── contracts/              # Smart contract source files
-│   └── EncryptedDonationLog.sol   # Main donation log contract
-├── deploy/                 # Deployment scripts
-├── tasks/                  # Hardhat custom tasks
-├── test/                   # Test files
-├── frontend/               # Next.js frontend application
-├── hardhat.config.ts       # Hardhat configuration
-└── package.json            # Dependencies and scripts
+鈹溾攢鈹€ contracts/              # Smart contract source files
+鈹?  鈹斺攢鈹€ EncryptedDonationLog.sol   # Main donation log contract
+鈹溾攢鈹€ deploy/                 # Deployment scripts
+鈹溾攢鈹€ tasks/                  # Hardhat custom tasks
+鈹溾攢鈹€ test/                   # Test files
+鈹溾攢鈹€ frontend/               # Next.js frontend application
+鈹溾攢鈹€ hardhat.config.ts       # Hardhat configuration
+鈹斺攢鈹€ package.json            # Dependencies and scripts
 ```
 
-## 📜 Available Scripts
+## 馃摐 Available Scripts
 
 | Script             | Description              |
 | ------------------ | ------------------------ |
@@ -92,18 +92,18 @@ encrypted-donation-log/
 | `npm run lint`     | Run linting checks       |
 | `npm run clean`    | Clean build artifacts    |
 
-## 📚 Documentation
+## 馃摎 Documentation
 
 - [FHEVM Documentation](https://docs.zama.ai/fhevm)
 - [FHEVM Hardhat Setup Guide](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup)
 - [FHEVM Testing Guide](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test)
 - [FHEVM Hardhat Plugin](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat)
 
-## 📄 License
+## 馃搫 License
 
 This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 馃啒 Support
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/zama-ai/fhevm/issues)
 - **Documentation**: [FHEVM Docs](https://docs.zama.ai)
@@ -111,5 +111,8 @@ This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE]
 
 ---
 
-**Built with ❤️ using Zama FHEVM**
+**Built with 鉂わ笍 using Zama FHEVM**
+
+
+- UI improvement #12 added at 2025-11-02 21:00:00
 
