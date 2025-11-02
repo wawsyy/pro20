@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Exclude SDK from server components bundling
-  serverComponentsExternalPackages: ['@zama-fhe/relayer-sdk'],
+  serverExternalPackages: ['@zama-fhe/relayer-sdk'],
   transpilePackages: ['@zama-fhe/relayer-sdk'],
   webpack: (config, { isServer }) => {
     if (!isServer) {
