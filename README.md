@@ -152,3 +152,6 @@ This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE]
 
 - UI improvement #24 added at 2025-11-03 09:00:00
 
+
+- Contract feature #25 added at 2025-11-03 10:00:00
+
