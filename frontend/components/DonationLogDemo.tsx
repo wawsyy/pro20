@@ -10,8 +10,6 @@ import { useZamaInstance } from "@/hooks/useZamaInstance";
 import { EncryptedDonationLogAddresses } from "@/abi/EncryptedDonationLogAddresses";
 import { EncryptedDonationLogABI } from "@/abi/EncryptedDonationLogABI";
 import { config as wagmiConfig } from "@/config/wagmi";
-import { DonationStats } from "@/components/DonationStats";
-import { DonationChart } from "@/components/DonationChart";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 
@@ -486,9 +484,6 @@ export const DonationLogDemo = () => {
         <ConnectButton />
       </div>
 
-      <DonationStats totalRecords={0} userRecords={donationRecords.length} />
-
-      <DonationChart donations={[]} />
 
       {showRelayerError && (
         <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 shadow-lg">
