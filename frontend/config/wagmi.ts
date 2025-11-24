@@ -21,7 +21,7 @@ const hardhatLocal = {
 export const config = getDefaultConfig({
   appName: 'Encrypted Donation Log',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID', // Get from https://cloud.walletconnect.com
-  chains: [hardhatLocal, sepolia], // Local and Sepolia networks
+  chains: [sepolia, hardhatLocal], // Sepolia first for production, then Hardhat Local for development
   ssr: false,
 });
 

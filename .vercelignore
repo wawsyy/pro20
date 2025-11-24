@@ -1,7 +1,8 @@
 node_modules
 .next
 .cache
-artifacts
+artifacts/@fhevm
+artifacts/build-info
 deployments/localhost
 deployments/*/solcInputs
 fhevmTemp

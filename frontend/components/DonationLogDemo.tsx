@@ -49,11 +49,16 @@ export const DonationLogDemo = () => {
 
   // Debug: Log chainId changes
   useEffect(() => {
-    if (mounted && chainId) {
+    if (mounted) {
       console.log('[DonationLogDemo] Current chainId:', chainId);
-      console.log('[DonationLogDemo] Contract address:', EncryptedDonationLogAddresses[chainId.toString()]?.address);
+      console.log('[DonationLogDemo] Wallet provider chainId:', provider ? (provider as any).chainId : 'N/A');
+      console.log('[DonationLogDemo] Available chainIds:', Object.keys(EncryptedDonationLogAddresses));
+      console.log('[DonationLogDemo] Contract address for chainId:', chainId ? EncryptedDonationLogAddresses[chainId.toString()]?.address : 'N/A');
+      if (chainId && EncryptedDonationLogAddresses[chainId.toString()]) {
+        console.log('[DonationLogDemo] Contract config:', EncryptedDonationLogAddresses[chainId.toString()]);
+      }
     }
-  }, [chainId, mounted]);
+  }, [chainId, mounted, provider]);
 
   const contractAddress = chainId ? EncryptedDonationLogAddresses[chainId.toString()]?.address : undefined;
   const isDeployed = contractAddress && contractAddress !== ethers.ZeroAddress;

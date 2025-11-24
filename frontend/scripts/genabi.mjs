@@ -114,8 +114,24 @@ if (!deploySepolia) {
   
   // Use actual Sepolia deployment address for production builds
   const sepoliaAddress = "0x7D43afa1E649EB6B2Af71B674227e13EEf3B09fA";
+  
+  // If ABI is still empty, try to read from deployments/sepolia if it exists
+  if (abi.length === 0) {
+    const sepoliaDeploymentPath = path.join(deploymentsDir, "sepolia", `${CONTRACT_NAME}.json`);
+    if (fs.existsSync(sepoliaDeploymentPath)) {
+      try {
+        const deploymentContent = fs.readFileSync(sepoliaDeploymentPath, "utf-8");
+        const deployment = JSON.parse(deploymentContent);
+        abi = deployment.abi || [];
+        console.log("[genabi] Using ABI from Sepolia deployment file");
+      } catch (e) {
+        console.warn("[genabi] Failed to read Sepolia deployment:", e.message);
+      }
+    }
+  }
+  
   deploySepolia = { abi: abi, address: sepoliaAddress };
-  console.warn("[genabi] Using Sepolia address fallback with ABI from artifacts or localhost");
+  console.warn(`[genabi] Using Sepolia address ${sepoliaAddress} with ${abi.length > 0 ? 'ABI' : 'empty ABI'}`);
 }
 
 // Handle case where localhost deployment doesn't exist (e.g., in Vercel build)
