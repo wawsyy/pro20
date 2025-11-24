@@ -2,7 +2,8 @@ node_modules
 .next
 .cache
 artifacts
-deployments
+deployments/localhost
+deployments/*/solcInputs
 fhevmTemp
 types
 coverage

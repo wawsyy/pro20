@@ -93,14 +93,29 @@ let deployLocalhost = readDeployment("localhost", 31337, CONTRACT_NAME, skipHard
 // Sepolia is optional
 let deploySepolia = readDeployment("sepolia", 11155111, CONTRACT_NAME, true /* optional */);
 if (!deploySepolia) {
-  // Use localhost ABI if available, otherwise use empty address
-  if (deployLocalhost) {
-    deploySepolia = { abi: deployLocalhost.abi, address: "0x0000000000000000000000000000000000000000" };
-  } else {
-    // Fallback for build environments where deployments might not exist
-    console.warn("[genabi] No deployments found, using empty fallback");
-    deploySepolia = { abi: [], address: "0x0000000000000000000000000000000000000000" };
+  // Try to read ABI from artifacts if deployment file doesn't exist
+  const artifactsPath = path.join(dir, "artifacts", "contracts", `${CONTRACT_NAME}.sol`, `${CONTRACT_NAME}.json`);
+  let abi = [];
+  if (fs.existsSync(artifactsPath)) {
+    try {
+      const artifactContent = fs.readFileSync(artifactsPath, "utf-8");
+      const artifact = JSON.parse(artifactContent);
+      abi = artifact.abi || [];
+      console.log("[genabi] Using ABI from artifacts");
+    } catch (e) {
+      console.warn("[genabi] Failed to read ABI from artifacts:", e.message);
+    }
   }
+  
+  // Use localhost ABI if available and artifacts ABI is empty
+  if (abi.length === 0 && deployLocalhost) {
+    abi = deployLocalhost.abi;
+  }
+  
+  // Use actual Sepolia deployment address for production builds
+  const sepoliaAddress = "0x7D43afa1E649EB6B2Af71B674227e13EEf3B09fA";
+  deploySepolia = { abi: abi, address: sepoliaAddress };
+  console.warn("[genabi] Using Sepolia address fallback with ABI from artifacts or localhost");
 }
 
 // Handle case where localhost deployment doesn't exist (e.g., in Vercel build)
