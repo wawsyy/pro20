@@ -14,7 +14,6 @@ import { DonationStats } from "@/components/DonationStats";
 import { DonationChart } from "@/components/DonationChart";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { NetworkSwitcher } from "@/components/NetworkSwitcher";
 
 interface DonationRecord {
   recordId: number;
@@ -483,7 +482,6 @@ export const DonationLogDemo = () => {
   return (
     <div className="grid w-full gap-6 px-4">
       <div className="flex justify-end items-center gap-3">
-        <NetworkSwitcher />
         <ThemeToggle />
         <ConnectButton />
       </div>
