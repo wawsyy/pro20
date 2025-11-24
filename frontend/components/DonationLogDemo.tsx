@@ -100,11 +100,23 @@ export const DonationLogDemo = () => {
           });
           
           const recordIdNumber = typeof recordId === 'bigint' ? Number(recordId) : Number(recordId);
-          const blockNumber = typeof metadata === 'object' && metadata && 'blockNumber' in metadata
-            ? (typeof metadata.blockNumber === 'bigint' 
-                ? metadata.blockNumber.toString() 
-                : (metadata.blockNumber?.toString() || '0'))
-            : (typeof metadata === 'bigint' ? metadata.toString() : String(metadata || '0'));
+          
+          // Type guard for metadata object
+          let blockNumber: string;
+          if (typeof metadata === 'object' && metadata !== null && 'blockNumber' in metadata) {
+            const meta = metadata as { blockNumber?: bigint | number | string };
+            if (typeof meta.blockNumber === 'bigint') {
+              blockNumber = meta.blockNumber.toString();
+            } else if (meta.blockNumber !== undefined) {
+              blockNumber = meta.blockNumber.toString();
+            } else {
+              blockNumber = '0';
+            }
+          } else if (typeof metadata === 'bigint') {
+            blockNumber = metadata.toString();
+          } else {
+            blockNumber = String(metadata || '0');
+          }
           
           records.push({
             recordId: recordIdNumber,
