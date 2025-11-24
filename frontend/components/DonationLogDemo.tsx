@@ -104,13 +104,15 @@ export const DonationLogDemo = () => {
           // Type guard for metadata object
           // readContract returns a tuple [address, bigint] for getRecordMetadata
           let blockNumber: string;
-          if (Array.isArray(metadata) && metadata.length >= 2) {
+          const metadataAny = metadata as unknown;
+          
+          if (Array.isArray(metadataAny) && metadataAny.length >= 2) {
             // Handle tuple return type [address, blockNumber]
-            const blockNum = metadata[1];
+            const blockNum = metadataAny[1];
             blockNumber = typeof blockNum === 'bigint' ? blockNum.toString() : String(blockNum || '0');
-          } else if (typeof metadata === 'object' && metadata !== null && 'blockNumber' in metadata) {
+          } else if (typeof metadataAny === 'object' && metadataAny !== null && 'blockNumber' in metadataAny) {
             // Handle object return type { submitter, blockNumber }
-            const meta = metadata as { blockNumber?: bigint | number | string };
+            const meta = metadataAny as { blockNumber?: bigint | number | string };
             if (typeof meta.blockNumber === 'bigint') {
               blockNumber = meta.blockNumber.toString();
             } else if (meta.blockNumber !== undefined) {
@@ -120,7 +122,7 @@ export const DonationLogDemo = () => {
             }
           } else {
             // Fallback for other types
-            blockNumber = String(metadata || '0');
+            blockNumber = String(metadataAny || '0');
           }
           
           records.push({
