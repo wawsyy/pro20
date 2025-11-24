@@ -6,13 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { config } from '@/config/wagmi';
-import { hardhat } from 'wagmi/chains';
-
-const hardhatLocal = {
-  ...hardhat,
-  id: 31337,
-  name: 'Hardhat Local',
-};
 import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage";
 import { ErrorFilter } from "@/components/ErrorFilter";
 
@@ -28,7 +21,7 @@ export function Providers({ children }: Props) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           // Suppress analytics errors in console
-          initialChain={hardhatLocal}
+          // Remove initialChain to auto-detect user's connected network
         >
           <ErrorFilter />
           <InMemoryStorageProvider>
