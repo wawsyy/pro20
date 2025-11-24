@@ -397,6 +397,9 @@ export const DonationLogDemo = () => {
 
   if (!isDeployed) {
     const chainName = chainId === 31337 ? 'Hardhat Local (31337)' : chainId === 11155111 ? 'Sepolia (11155111)' : `Chain ${chainId || 'unknown'}`;
+    const isProduction = typeof window !== 'undefined' && 
+      (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel.com'));
+    
     return (
       <div className="mx-auto mt-20">
         <div className="bg-white rounded-xl p-8 shadow-lg">
@@ -404,6 +407,26 @@ export const DonationLogDemo = () => {
           <p className="text-gray-600 text-center mb-4">
             The EncryptedDonationLog contract is not deployed on {chainName}. Please deploy it first.
           </p>
+          {chainId === 31337 && isProduction && (
+            <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mt-4 mb-4">
+              <p className="text-sm text-yellow-800 font-semibold mb-2">
+                ⚠️ Hardhat Local Network Detected in Production
+              </p>
+              <p className="text-sm text-yellow-700 mb-2">
+                You are connected to Hardhat Local (31337), but this is a production deployment. 
+                Hardhat Local is only available in local development.
+              </p>
+              <p className="text-sm text-yellow-700">
+                <strong>Please switch to Sepolia testnet in your MetaMask wallet:</strong>
+              </p>
+              <ol className="list-decimal list-inside text-sm text-yellow-700 mt-2 space-y-1">
+                <li>Click the MetaMask extension</li>
+                <li>Click the network dropdown (currently showing "Hardhat Local" or "Localhost 8545")</li>
+                <li>Select "Sepolia" from the list</li>
+                <li>If Sepolia is not in the list, add it manually (Chain ID: 11155111)</li>
+              </ol>
+            </div>
+          )}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4 mb-4">
             <p className="text-sm text-gray-700 mb-2">
               <strong>Debug Info:</strong>
@@ -411,7 +434,10 @@ export const DonationLogDemo = () => {
             <p className="text-xs text-gray-600 font-mono">
               Detected Chain ID: {chainId || 'undefined'}<br />
               Contract Address: {contractAddress || 'Not found'}<br />
-              Wallet Connected: {isConnected ? 'Yes' : 'No'}
+              Wallet Connected: {isConnected ? 'Yes' : 'No'}<br />
+              {provider && (provider as any).chainId && (
+                <>Provider Chain ID: {(provider as any).chainId}<br /></>
+              )}
             </p>
           </div>
           {chainId === 31337 && (

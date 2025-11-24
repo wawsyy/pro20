@@ -155,7 +155,20 @@ export function useZamaInstance(chainId?: number, provider?: ethers.Eip1193Provi
         setError(null);
 
         // Check if this is local network - use mock mode
+        // Only use localhost in development (not in production/Vercel)
+        const isProduction = typeof window !== 'undefined' && 
+          (window.location.hostname.includes('vercel.app') || 
+           window.location.hostname.includes('vercel.com') ||
+           process.env.NODE_ENV === 'production');
+        
         if (chainId === LOCAL_CHAIN_ID) {
+          if (isProduction) {
+            console.warn('[useZamaInstance] Hardhat Local detected in production. Please switch to Sepolia testnet.');
+            if (mounted) {
+              setError('Hardhat Local network is not available in production. Please switch to Sepolia testnet in your wallet.');
+            }
+            return;
+          }
           console.log('[useZamaInstance] Using mock mode for local network');
           const mockInstance = await createMockInstance(LOCAL_CHAIN_ID, LOCAL_RPC_URL);
           if (mounted) {
