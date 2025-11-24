@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, usePublicClient, useChainId } from 'wagmi';
+import { useAccount, usePublicClient, useChainId, useSwitchChain } from 'wagmi';
 import { ethers } from "ethers";
 import { readContract } from '@wagmi/core';
 import { useEthersSigner } from "@/hooks/useEthersSigner";
@@ -14,6 +14,7 @@ import { DonationStats } from "@/components/DonationStats";
 import { DonationChart } from "@/components/DonationChart";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { NetworkSwitcher } from "@/components/NetworkSwitcher";
 
 interface DonationRecord {
   recordId: number;
@@ -25,6 +26,7 @@ interface DonationRecord {
 export const DonationLogDemo = () => {
   const { address, isConnected } = useAccount();
   const chainId = useChainId(); // Use useChainId hook for more reliable chain detection
+  const { switchChain, isPending: isSwitchingChain } = useSwitchChain();
   const publicClient = usePublicClient();
   const ethersSignerPromise = useEthersSigner({ chainId });
   
@@ -419,12 +421,26 @@ export const DonationLogDemo = () => {
               <p className="text-sm text-yellow-700">
                 <strong>Please switch to Sepolia testnet in your MetaMask wallet:</strong>
               </p>
-              <ol className="list-decimal list-inside text-sm text-yellow-700 mt-2 space-y-1">
+              <ol className="list-decimal list-inside text-sm text-yellow-700 mt-2 space-y-1 mb-3">
                 <li>Click the MetaMask extension</li>
                 <li>Click the network dropdown (currently showing "Hardhat Local" or "Localhost 8545")</li>
                 <li>Select "Sepolia" from the list</li>
                 <li>If Sepolia is not in the list, add it manually (Chain ID: 11155111)</li>
               </ol>
+              <button
+                onClick={() => {
+                  try {
+                    switchChain({ chainId: 11155111 });
+                  } catch (error: any) {
+                    console.error('Failed to switch to Sepolia:', error);
+                    alert('Failed to switch network. Please switch manually in MetaMask.');
+                  }
+                }}
+                disabled={isSwitchingChain || !isConnected}
+                className="w-full mt-3 px-4 py-2 bg-yellow-600 text-white rounded-lg font-semibold hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isSwitchingChain ? 'Switching...' : 'Switch to Sepolia Testnet'}
+              </button>
             </div>
           )}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4 mb-4">
@@ -467,6 +483,7 @@ export const DonationLogDemo = () => {
   return (
     <div className="grid w-full gap-6 px-4">
       <div className="flex justify-end items-center gap-3">
+        <NetworkSwitcher />
         <ThemeToggle />
         <ConnectButton />
       </div>
